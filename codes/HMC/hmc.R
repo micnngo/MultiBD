@@ -1,5 +1,5 @@
-nThreads = 4
-nblocks = 20*nThreads
+nThreads = 2#4
+nblocks = 80#20*nThreads
 
 t = c(0,0.5,1,1.5,2,2.5,3,4)
 S = c(254,235,201,153,121,110,97,83)
@@ -188,36 +188,44 @@ hmcsampler <- function(NumOfIterations, Trajectory, NumOfLeapfrog) {
 
 #### Run HMC ####
 system.time(hmc <-hmcsampler(NumOfIterations = 10000, Trajectory = 0.2, NumOfLeapfrog = 2))
-mcmc <- matrix(unlist(hmc$samples),byrow=T,ncol=2)
-colnames(mcmc) = c("logalpha", "logbeta")
+mcmc <- data.frame(exp(matrix(unlist(hmc$samples),byrow=T,ncol=2)))
+colnames(mcmc) = c("gamma", "beta")
 
-plot(mcmc[,1], type="l")
-plot(mcmc[,2], type="l")
+write.csv(x = mcmc,file = "codes/HMC/hmc_samples_Lam_paper.csv")
 require(coda)
+
+sink(file = "codes/HMC/output_Lam_paper.txt")
+print("Effective sample size:")
 effectiveSize(mcmc)
+print("MCMC summary")
+print(summary(mcmc))
+quantile(mcmc[,1], probs = c(0.025,0.5,0.975))
+mean(mcmc[,2])
+quantile(mcmc[,2], probs = c(0.025,0.5,0.975))
+sink()
 
 #### Density plot ####
 require(ggplot2)
-x = as.vector(mcmc[,1])
-y = as.vector(mcmc[,2])
-df <- data.frame(x, y)
 
+mcmc$iter = 1:dim(mcmc)[1]
 pdf("codes/HMC/HMC_density.pdf")
-ggplot(df,aes(x=x,y=y)) +
-  stat_density2d(aes(fill=..level..), geom="polygon", h = 0.2) +
-  #   geom_density(adjust=5) +
-  #   stat_density2d(aes(fill=..level..), geom="density2d")
-  scale_fill_gradient(low="grey85", high="grey35", guide = FALSE) +
-  xlab(expression(paste("log (",gamma,")",sep=""))) +
-  ylab(expression(paste("log (",beta,")",sep=""))) +
+ggplot(mcmc)+geom_line(aes(y=gamma,x=iter))
+ggplot(mcmc)+geom_line(aes(y=beta,x=iter))
+
+# plot(mcmc[,1], type="l",main="alpha")
+# plot(mcmc[,2], type="l",main="beta")
+
+post_plot = ggplot(data=mcmc,aes(x=gamma, y=beta))+
+  stat_density_2d(aes(fill = ..level..), geom = "polygon")+
+  scale_fill_gradient(#low="grey85", high="grey35",
+    guide = FALSE) +
+  xlab(expression(paste("",gamma,"",sep=""))) +
+  ylab(expression(paste("",beta,"",sep=""))) +
   #   geom_point(aes(x = log(2.73), y = log(0.0178)), size = 5, shape = 3) +
   #   geom_point(aes(x = log(3.39), y = log(0.0212)), size = 5, shape = 4) +
   theme(axis.text=element_text(size=20),
         axis.title=element_text(size=22,face="bold"))
+print(post_plot)
 dev.off()
 
-mean(exp(mcmc[,1]))
-quantile(exp(mcmc[,1]), probs = c(0.025,0.975))
-mean(exp(mcmc[,2]))
-quantile(exp(mcmc[,2]), probs = c(0.025,0.975))
 
