@@ -93,3 +93,36 @@ SIR_prob <- function(t, alpha, beta, S0, I0, nSI, nIR, direction = c("Forward","
 
   return(abs(res))
 }
+
+###################################################
+### Compute derivative of transition probabilities of SIR models
+###################################################
+
+#' Derivative of Transition probabilities of an SIR process
+#' @export
+
+SIR_derivatives <- function(t, N,alpha, beta, S0, I0, A, B, derivative.order = c("alpha", "beta"),
+                            direction = c("Forward","Backward"),
+                            nblocks=20, tol=1e-12, computeMode=0, nThreads=4) {
+
+  direction <- match.arg(direction)
+  dir = 0
+  if (direction=="Backward") dir = 1
+
+  derivative.order <- match.arg(derivative.order)
+  if (derivative.order=="alpha") ord = 1
+  if (derivative.order=="beta") ord = 2
+
+  res = matrix(SIR_derivatives_Cpp(t,alpha, beta, S0, I0, A+1, B+1, ord, dir,
+                                   nblocks, tol, computeMode, nThreads),
+               nrow = A+1, byrow = T)
+
+  ### Need to fix names
+  rownames(res) = S0:(S0-A) # Susceptible
+  colnames(res) = (N-S0-I0):(N-S0-I0+B) # Removal
+
+  return(res)
+}
+#'
+
+

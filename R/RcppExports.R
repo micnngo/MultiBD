@@ -9,12 +9,20 @@ bbd_lt_invert_Cpp <- function(t, a0, b0, lambda1, lambda2, mu2, gamma, x, y, A, 
     .Call('_MultiBD_bbd_lt_invert_Cpp', PACKAGE = 'MultiBD', t, a0, b0, lambda1, lambda2, mu2, gamma, x, y, A, Bp1, nblocks, tol, computeMode, nThreads, maxdepth)
 }
 
+derivatives_lt_invert_Cpp <- function(t, lambda1, lambda2, alpha, beta, S0, I0, Ap1, Bp1, ord, direction, nblocks, tol, computeMode, nThreads) {
+    .Call('_MultiBD_derivatives_lt_invert_Cpp', PACKAGE = 'MultiBD', t, lambda1, lambda2, alpha, beta, S0, I0, Ap1, Bp1, ord, direction, nblocks, tol, computeMode, nThreads)
+}
+
 SEIR_Cpp <- function(t, alpha, beta, kappa, S0, E0, I0, Ap1, Bp1, Cp1, direction, nblocks, tol, Lmax, computeMode, nThreads) {
     .Call('_MultiBD_SEIR_Cpp', PACKAGE = 'MultiBD', t, alpha, beta, kappa, S0, E0, I0, Ap1, Bp1, Cp1, direction, nblocks, tol, Lmax, computeMode, nThreads)
 }
 
 SIR_Cpp <- function(t, alpha, beta, S0, I0, Ap1, Bp1, direction, powS, powI_inf, powI_rem, nblocks, tol, Lmax, computeMode, nThreads) {
     .Call('_MultiBD_SIR_Cpp', PACKAGE = 'MultiBD', t, alpha, beta, S0, I0, Ap1, Bp1, direction, powS, powI_inf, powI_rem, nblocks, tol, Lmax, computeMode, nThreads)
+}
+
+SIR_derivatives_Cpp <- function(t, alpha, beta, S0, I0, Ap1, Bp1, ord, direction, nblocks, tol, computeMode, nThreads) {
+    .Call('_MultiBD_SIR_derivatives_Cpp', PACKAGE = 'MultiBD', t, alpha, beta, S0, I0, Ap1, Bp1, ord, direction, nblocks, tol, computeMode, nThreads)
 }
 
 tb_lt_invert_Cpp <- function(t, lambda1, lambda2, lambda3, Ap1, Bp1, Cp1, direction, nblocks, tol, Lmax, computeMode, nThreads) {
