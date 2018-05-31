@@ -2,7 +2,7 @@
 
 void derivatives_lt_Cpp(const mytype::ComplexNumber s, const std::vector<double>& lambda1,
     const std::vector<double>& lambda2, const double alpha, const double beta, const double powI_inf,
-    const long int S0, const long int I0, const int Ap1, const int Bp1,
+    const double powI_rem, const long int S0, const long int I0, const int Ap1, const int Bp1,
     const int ord, const int direction,
     const std::vector<double>& yvec, mytype::ComplexVector& ff) {
 

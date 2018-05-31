@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include <math.h>  
+#include <math.h>
 #include <thread>
 #include <future>
 #include <iostream>
@@ -180,11 +180,12 @@ std::vector<double> SIR_Cpp(const double t, const double alpha, const double bet
 
 std::vector<double> SIR_derivatives_Cpp(const double t,
                                         const double alpha, const double beta,
+                                        const double powI_inf, const double powI_rem,
                                         const long int S0, const long int I0,
                                         const int Ap1, const int Bp1,
                                         // ord new argument derivative type w.r.t alpha or beta
                                         const int ord, const int direction,
-                                        //Missing powS, powI_inf, powI_rem
+                                        //Missing powS
                                         const int nblocks, const double tol,
                                         //Missing int& Lmax,
                                         const int computeMode, const int nThreads);
@@ -192,6 +193,7 @@ std::vector<double> SIR_derivatives_Cpp(const double t,
 std::vector<double> derivatives_lt_invert_Cpp(double t, const std::vector<double>& lambda1,
                                               const std::vector<double>& lambda2,
                                               const double alpha, const double beta,
+                                              const double powI_inf, const double powI_rem,
                                               const long int S0, const long int I0,
                                               const int Ap1, const int Bp1, const int ord,
                                               const int direction, const int nblocks,
@@ -201,6 +203,7 @@ void derivatives_lt_Cpp(const mytype::ComplexNumber s,
                         const std::vector<double>& lambda1,
                         const std::vector<double>& lambda2,
                         const double alpha, const double beta,
+                        const double powI_inf, const double powI_rem,
                         const long int S0, const long int I0,
                         const int Ap1, const int Bp1,
                         const int ord, const int direction,
