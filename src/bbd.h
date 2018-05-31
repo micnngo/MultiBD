@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <math.h>  
 #include <thread>
 #include <future>
 #include <iostream>
@@ -538,5 +539,3 @@ namespace loops {
 //  }
 
 //} // namespace unroll
-
-

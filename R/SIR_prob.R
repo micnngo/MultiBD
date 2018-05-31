@@ -101,7 +101,7 @@ SIR_prob <- function(t, alpha, beta, S0, I0, nSI, nIR, direction = c("Forward","
 #' Derivative of Transition probabilities of an SIR process
 #' @export
 
-SIR_derivatives <- function(t, N,alpha, beta, S0, I0, A, B, derivative.order = c("alpha", "beta"),
+SIR_derivatives <- function(t, N,alpha, beta, S0, I0, A, B, derivative.order = c("alpha", "beta", "alpha_pow"),
                             direction = c("Forward","Backward"),
                             nblocks=20, tol=1e-12, computeMode=0, nThreads=4) {
 
@@ -110,8 +110,9 @@ SIR_derivatives <- function(t, N,alpha, beta, S0, I0, A, B, derivative.order = c
   if (direction=="Backward") dir = 1
 
   derivative.order <- match.arg(derivative.order)
-  if (derivative.order=="alpha") ord = 1
-  if (derivative.order=="beta") ord = 2
+  if (derivative.order=="alpha") ord = 1 #gamma
+  if (derivative.order=="beta") ord = 2 #beta
+  if (derivative.order=="powI_inf") ord = 3 #alpha powe
 
   res = matrix(SIR_derivatives_Cpp(t,alpha, beta, S0, I0, A+1, B+1, ord, dir,
                                    nblocks, tol, computeMode, nThreads),

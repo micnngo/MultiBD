@@ -3,7 +3,7 @@
 template <class ParallelizationScheme>
 std::vector<double> derivatives_lt_invert_Cpp_impl(double t,
     const std::vector<double>& lambda1, const std::vector<double>& lambda2,
-    const double alpha, const double beta,
+    const double alpha, const double beta, const double powI_inf,
     const long int S0, const long int I0,
     const int Ap1, const int Bp1,
     const int ord, const int direction,
@@ -37,12 +37,12 @@ std::vector<double> derivatives_lt_invert_Cpp_impl(double t,
     [&](int w) {
       mytype::ComplexNumber s(AA/(2*t),double_PI*(w+1)/t);
       ig[w].resize(Ap1*Bp1);
-      derivatives_lt_Cpp(s,lambda1,lambda2,alpha,beta,S0,I0,Ap1,Bp1,ord,direction,yvec,ig[w]);
+      derivatives_lt_Cpp(s,lambda1,lambda2,alpha,beta,powI_inf,S0,I0,Ap1,Bp1,ord,direction,yvec,ig[w]);
     });
 
   mytype::ComplexNumber s(AA/(2*t),0.0);
   mytype::ComplexVector psum0(matsize);
-  derivatives_lt_Cpp(s,lambda1,lambda2,alpha,beta,S0,I0,Ap1,Bp1,ord,direction,yvec,psum0);
+  derivatives_lt_Cpp(s,lambda1,lambda2,alpha,beta,powI_inf,S0,I0,Ap1,Bp1,ord,direction,yvec,psum0);
 
   std::for_each(boost::make_counting_iterator(0), boost::make_counting_iterator(matsize),
     [&](int i) {
@@ -67,7 +67,7 @@ std::vector<double> derivatives_lt_invert_Cpp_impl(double t,
             [&](int w) {
               mytype::ComplexNumber s(AA/(2*t),double_PI*(w+kmax+1)/t);
               ig[w+kmax].resize(matsize);
-              derivatives_lt_Cpp(s,lambda1,lambda2,alpha,beta,S0,I0,Ap1,Bp1,ord,direction,yvec,ig[w+kmax]);
+              derivatives_lt_Cpp(s,lambda1,lambda2,alpha,beta,powI_inf,S0,I0,Ap1,Bp1,ord,direction,yvec,ig[w+kmax]);
             });
 
           kmax += nblocks;
@@ -88,7 +88,7 @@ std::vector<double> derivatives_lt_invert_Cpp_impl(double t,
 // [[Rcpp::export]]
 std::vector<double> derivatives_lt_invert_Cpp(double t, const std::vector<double>& lambda1,
     const std::vector<double>& lambda2,
-    const double alpha, const double beta,
+    const double alpha, const double beta, const double powI_inf,
     const long int S0, const long int I0,
     const int Ap1, const int Bp1, const int ord,
     const int direction, const int nblocks,
@@ -98,7 +98,7 @@ std::vector<double> derivatives_lt_invert_Cpp(double t, const std::vector<double
       case 1: {
         loops::C11Threads loopC11Threads(nThreads, nblocks);
         return derivatives_lt_invert_Cpp_impl(t, lambda1, lambda2,
-                    alpha, beta, S0, I0,
+                    alpha, beta, powI_inf, S0, I0,
                     Ap1, Bp1, ord, direction,
                     nblocks, tol, loopC11Threads);
       }
@@ -106,7 +106,7 @@ std::vector<double> derivatives_lt_invert_Cpp(double t, const std::vector<double
       case 2: {
         loops::C11ThreadPool loopC11ThreadPool(nThreads, nblocks);
         return derivatives_lt_invert_Cpp_impl(t, lambda1, lambda2,
-                    alpha, beta, S0, I0,
+                    alpha, beta, powI_inf, S0, I0,
                     Ap1, Bp1, ord, direction,
                     nblocks, tol, loopC11ThreadPool);
       }
@@ -114,7 +114,7 @@ std::vector<double> derivatives_lt_invert_Cpp(double t, const std::vector<double
       case 3: {
         loops::C11Async loopC11Async(nThreads, nblocks);
         return derivatives_lt_invert_Cpp_impl(t, lambda1, lambda2,
-                    alpha, beta, S0, I0,
+                    alpha, beta, powI_inf, S0, I0,
                     Ap1, Bp1, ord, direction,
                     nblocks, tol, loopC11Async);
       }
@@ -130,7 +130,7 @@ std::vector<double> derivatives_lt_invert_Cpp(double t, const std::vector<double
       default: {
         loops::STL loopSTL;
         return derivatives_lt_invert_Cpp_impl(t, lambda1, lambda2,
-                    alpha, beta, S0, I0,
+                    alpha, beta, powI_inf, S0, I0,
                     Ap1, Bp1, ord, direction,
                     nblocks, tol, loopSTL);
       }
