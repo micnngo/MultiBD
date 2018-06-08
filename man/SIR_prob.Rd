@@ -9,7 +9,7 @@ SIR_prob(t, alpha, beta, S0, I0, nSI, nIR, direction = c("Forward",
   nThreads = 4)
 }
 \arguments{
-\item{t}{time #hi}
+\item{t}{time}
 
 \item{alpha}{removal rate}
 

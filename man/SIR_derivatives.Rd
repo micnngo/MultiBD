@@ -4,9 +4,10 @@
 \alias{SIR_derivatives}
 \title{Derivative of Transition probabilities of an SIR process}
 \usage{
-SIR_derivatives(t, N, alpha, beta, S0, I0, A, B, derivative.order = c("alpha",
-  "beta"), direction = c("Forward", "Backward"), nblocks = 20,
-  tol = 1e-12, computeMode = 0, nThreads = 4)
+SIR_derivatives(t, N, alpha, beta, power = NULL, S0, I0, A, B,
+  derivative.order = c("alpha", "beta", "powI_inf"),
+  direction = c("Forward", "Backward"), nblocks = 20, tol = 1e-12,
+  computeMode = 0, nThreads = 4)
 }
 \description{
 Derivative of Transition probabilities of an SIR process
