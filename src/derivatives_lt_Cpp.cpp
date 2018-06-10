@@ -18,8 +18,8 @@ void derivatives_lt_Cpp(const mytype::ComplexNumber s, const std::vector<double>
   mytype::ComplexVector f(Ap1*Bp1);
 
   //two natural log constants below needed for alpha case
-  double logS1 = 1.0; //ln(S0 - x + 1), initialized at 1
-  double logS0 = 1.0; //ln(S0 - x)
+  double logS1 = 1.0; //ln(I0 + x - y), initialized at 1
+  double logS0 = 1.0; //ln(I0 + x - 1 -y)
 
   if (direction == 0) { // Forward direction
     f[0] = 1/(s + yvec[0]);
@@ -35,7 +35,7 @@ void derivatives_lt_Cpp(const mytype::ComplexNumber s, const std::vector<double>
       }
 
       case 3: { //alpha
-        ff[0] = - beta*pow(S0, powI_inf)*I0*log(S0)*f[0]/(s + yvec[0]);
+        ff[0] = - beta*S0*pow(I0, powI_inf)*log(I0)*f[0]/(s + yvec[0]);
         break;
       }
     }
@@ -54,9 +54,9 @@ void derivatives_lt_Cpp(const mytype::ComplexNumber s, const std::vector<double>
         }
 
         case 3: { //alpha
-          logS1 = log((alpha*lambda1[i])/(beta*lambda2[i]));
-          logS0 = log((alpha*lambda1[i+1])/(beta*lambda2[i+1]));
-          ff[(i+1)*Bp1] = (lambda1[i]*ff[i*Bp1] + lambda1[i]*logS1*f[i*Bp1] - lambda1[i+1]*logS0*f[(i+1)*Bp1])/(s + yvec[i+1]);
+          logS1 = log(pow(lambda2[i+1]/alpha, 1.0/powI_rem)); //ln[I0 + x - y]
+          logS0 = log(pow(lambda2[i]/alpha, 1.0/powI_rem)); //ln[I0 + x - 1 - y]
+          ff[(i+1)*Bp1] = (lambda1[i]*ff[i*Bp1] + lambda1[i]*logS0*f[i*Bp1] - lambda1[i+1]*logS1*f[(i+1)*Bp1])/(s + yvec[i+1]);
         }
       }
     }
@@ -75,8 +75,8 @@ void derivatives_lt_Cpp(const mytype::ComplexNumber s, const std::vector<double>
         }
 
         case 3: { //alpha
-          logS0 = log((alpha*lambda1[(j+1)*Ap1])/(beta*lambda2[(j+1)*Ap1]));
-          ff[j+1] = (lambda2[j*Ap1]*ff[j] - lambda1[(j+1)*Ap1]*logS0*f[j+1])/(s + yvec[(j+1)*Ap1]);
+          logS1 = log(pow(lambda2[(j+1)*Ap1]/alpha, 1.0/powI_rem)); //ln[I0 + x - y]
+          ff[j+1] = (lambda2[j*Ap1]*ff[j] - lambda1[(j+1)*Ap1]*logS1*f[j+1])/(s + yvec[(j+1)*Ap1]);
         }
       }
     }
@@ -96,9 +96,9 @@ void derivatives_lt_Cpp(const mytype::ComplexNumber s, const std::vector<double>
           }
 
           case 3: { //alpha
-            logS1 = log((alpha*lambda1[i + (j+1)*Ap1])/(beta*lambda2[i + (j+1)*Ap1]));
-            logS0 = log((alpha*lambda1[(i+1) + (j+1)*Ap1])/(beta*lambda2[(i+1) + (j+1)*Ap1]));
-            ff[(i+1)*Bp1] = (lambda1[i + (j+1)*Ap1]*ff[i*Bp1 + j+1] + lambda2[i+1 + j*Ap1]*ff[(i+1)*Bp1 + j] + lambda1[i + (j+1)*Ap1]*logS1*f[i*Bp1 + j+1] - lambda1[i+1 + (j+1)*Ap1]*logS0*f[(i+1)*Bp1 + j+1])/(s + yvec[i+1 + (j+1)*Ap1]);
+            logS1 = log(pow(lambda2[i+1 + (j+1)*Ap1]/alpha, 1.0/powI_rem)); //ln[I0 + x - y]
+            logS0 = log(pow(lambda2[i + (j+1)*Ap1]/alpha, 1.0/powI_rem)); //ln[I0 + x - 1 - y]
+            ff[(i+1)*Bp1] = (lambda1[i + (j+1)*Ap1]*ff[i*Bp1 + j+1] + lambda2[i+1 + j*Ap1]*ff[(i+1)*Bp1 + j] + lambda1[i + (j+1)*Ap1]*logS0*f[i*Bp1 + j+1] - lambda1[i+1 + (j+1)*Ap1]*logS1*f[(i+1)*Bp1 + j+1])/(s + yvec[i+1 + (j+1)*Ap1]);
           }
         }
       }
